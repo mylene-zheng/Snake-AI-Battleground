@@ -28,3 +28,23 @@ The application tracks several metrics to compare the two approaches:
    ```bash
    git clone [https://github.com/your-username/Snake-AI-Battleground.git](https://github.com/your-username/Snake-AI-Battleground.git)
    ```
+2. **Install dependencies:**
+   ```bash
+   pip install pygame numpy
+   ```
+3. **Run the simulation:**
+   ```bash
+   python main.py
+   ```
+
+## ⚙️ Hyperparameters (RL)
+| Parameter | Value | Justification |
+| :--- | :--- | :--- |
+| **Learning Rate ($\alpha$)** | 0.1 | Ensures stable learning by avoiding Q-Table oscillations. |
+| **Discount Factor ($\gamma$)** | 0.99 | Gives high importance to achieving long-term goals (eating apples). |
+| **Exploration Rate ($\epsilon$)** | $1.0 \rightarrow 0.01$ | Encourages exploration initially, then shifts to exploitation over time. |
+| **Decay Rate ($\epsilon_{decay}$)** | 0.995 | Multiplicative factor applied to $\epsilon$ after each episode. |
+## 👥 Authors
+Ruowen ZHENG 
+
+Lina BERBOUCHA
