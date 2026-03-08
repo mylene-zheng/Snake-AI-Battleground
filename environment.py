@@ -113,7 +113,92 @@ class GameEnvironment:
     def get_rl_state(self) -> List[int]:
         """
         Calculates the local vector state for the RL agent.
-        Returns: [danger_straight, danger_right, danger_left, dir_up, dir_down, dir_left, dir_right]
+        Returns: [danger_straight, danger_right, danger_left, 
+                  food_up, food_down, food_left, food_right]
         """
-        # TODO: Implement the relative vision math here!
-        return [0, 0, 0, 0, 0, 0, 0]
+        head = self.snake.get_head()
+        
+        # Define the points immediately adjacent to the head
+        point_l = (head[0] - 1, head[1])
+        point_r = (head[0] + 1, head[1])
+        point_u = (head[0], head[1] - 1)
+        point_d = (head[0], head[1] + 1)
+        
+        # Identify current direction
+        dir_l = self.snake.direction == LEFT
+        dir_r = self.snake.direction == RIGHT
+        dir_u = self.snake.direction == UP
+        dir_d = self.snake.direction == DOWN
+
+        # Calculate Danger based on relative direction
+        # Danger Straight
+        danger_straight = (dir_r and self._check_collision(point_r)) or \
+                          (dir_l and self._check_collision(point_l)) or \
+                          (dir_u and self._check_collision(point_u)) or \
+                          (dir_d and self._check_collision(point_d))
+                          
+        # Danger Right (Relative to the snake's current facing)
+        danger_right = (dir_u and self._check_collision(point_r)) or \
+                       (dir_d and self._check_collision(point_l)) or \
+                       (dir_l and self._check_collision(point_u)) or \
+                       (dir_r and self._check_collision(point_d))
+
+        # Danger Left (Relative to the snake's current facing)
+        danger_left = (dir_d and self._check_collision(point_r)) or \
+                      (dir_u and self._check_collision(point_l)) or \
+                      (dir_r and self._check_collision(point_u)) or \
+                      (dir_l and self._check_collision(point_d))
+
+        # Food Location
+        food_up = self.food[1] < head[1]
+        food_down = self.food[1] > head[1]
+        food_left = self.food[0] < head[0]
+        food_right = self.food[0] > head[0]
+
+        # Construct the final state vector
+        state = [
+            int(danger_straight),
+            int(danger_right),
+            int(danger_left),
+            int(food_up),
+            int(food_down),
+            int(food_left),
+            int(food_right)
+        ]
+
+        return state
+    
+
+if __name__ == "__main__":
+    print("--- Starting Environment Test ---")
+    
+    # 1. Initialize a small grid to force a quick collision
+    env = GameEnvironment(grid_size=5)
+    
+    print(f"Initial Snake Head: {env.snake.get_head()}")
+    print(f"Initial Food Location: {env.food}")
+    print(f"Initial RL State: {env.get_rl_state()}\n")
+
+    # 2. Force the snake to move in a circle (Right, Down, Left, Up)
+    test_moves = [
+        ("RIGHT", (1, 0)),
+        ("DOWN", (0, 1)),
+        ("LEFT", (-1, 0)),
+        ("UP", (0, -1)),
+        ("UP", (0, -1)),
+        ("UP", (0, -1)),
+        ("UP", (0, -1)) # This last UP should cause it to hit the top wall (y < 0)
+    ]
+
+    for name, direction in test_moves:
+        print(f"Moving: {name}")
+        next_state, reward, done = env.step(direction)
+        
+        print(f"  New Head: {env.snake.get_head()}")
+        print(f"  RL State: {next_state}")
+        print(f"  Reward: {reward}")
+        print(f"  Done (Game Over): {done}\n")
+        
+        if done:
+            print("Crash detected! Environment is working correctly.")
+            break
