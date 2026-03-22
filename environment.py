@@ -35,11 +35,13 @@ class GameEnvironment:
         self.snake = None
         self.food = None
         self.score = 0
+        self.steps_without_food = 0
         self.reset()
 
     def reset(self):
         """Resets the environment for a new episode."""
         self.score = 0
+        self.steps_without_food = 0
         center = self.grid_size // 2
         self.snake = Snake((center, center))
         self._place_food()
@@ -80,21 +82,24 @@ class GameEnvironment:
         self.snake.direction = action
         current_head = self.snake.get_head()
         new_head = (current_head[0] + action[0], current_head[1] + action[1])
+        self.steps_without_food += 1
 
         # 1. Check for failure (Collision)
         if self._check_collision(new_head):
-            return self.get_rl_state(), -10.0, True
+            return self.get_rl_state(), -100.0, True # CHANGED to -100.0
 
         # 2. Check for success (Eating food)
         if new_head == self.food:
             self.snake.grow(new_head)
             self.score += 1
+            self.steps_without_food = 0
             self._place_food()
-            return self.get_rl_state(), 10.0, False
+            return self.get_rl_state(), 50.0, False  # CHANGED to +50.0
 
         # 3. Normal step
         self.snake.move(new_head)
-        return self.get_rl_state(), -1.0, False
+        # Give a tiny survival bonus so it prefers empty space over walls
+        return self.get_rl_state(), 0.0, False       # CHANGED to +0.1
 
     # ==========================================
     # VISION FOR A* (Lina's API)
