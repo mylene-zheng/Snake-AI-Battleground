@@ -55,6 +55,40 @@ def plot_training_metrics(csv_path="data/training_logs.csv", window=50):
     plt.tight_layout()
     plt.show()
 
+# ==========================================
+# 2. FINAL BENCHMARK BAR CHARTS (A* vs RL)
+# ==========================================
+def plot_algorithm_comparison(astar_time, rl_time, astar_mem, rl_mem, astar_nodes):
+    """
+    Generates side-by-side bar charts to compare A* and RL.
+    You can plug your final numbers from the Pygame UI directly into here!
+    """
+    plt.style.use('dark_background')
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+    fig.suptitle('Comparaison des Performances : Algorithme A* vs RL', fontsize=16, fontweight='bold', color='white')
+    
+    labels = ['A*', 'RL']
+    colors = ['#4B8BBE', '#FFE873'] # Python Blue and Yellow
+
+    # Chart 1: Temps de Calcul (M02)
+    ax1.bar(labels, [astar_time, rl_time], color=colors)
+    ax1.set_title('Temps de Calcul Moyen (ms)')
+    ax1.set_ylabel('Millisecondes (Moins c\'est mieux)')
+
+    # Chart 2: Consommation Mémoire (M04)
+    ax2.bar(labels, [astar_mem, rl_mem], color=colors)
+    ax2.set_title('Empreinte Mémoire (KB)')
+    ax2.set_ylabel('Kilooctets (Moins c\'est mieux)')
+
+    # Chart 3: Noeuds Explorés (M03)
+    # RL is 0 because it doesn't search!
+    ax3.bar(labels, [astar_nodes, 0], color=colors)
+    ax3.set_title('Coût d\'Exploration (Nœuds)')
+    ax3.set_ylabel('Nœuds (Moins c\'est mieux)')
+
+    plt.tight_layout()
+    plt.show()
+
 if __name__ == "__main__":
     # A window of 50 is perfect for smoothing out a 1000-episode training run.
     # If you train for 10,000 episodes later, you might want to increase this to 100 or 200.

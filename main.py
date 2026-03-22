@@ -4,6 +4,7 @@ from interface import GameInterface, NIGHT_BLUE, WHITE
 from environment import GameEnvironment
 from agents.rl_agent import RLAgent
 from metrics import PerformanceTracker
+from agents.astar_agent import AgentAStar
 
 def get_manhattan_distance(pos1, pos2):
     """Calculates the absolute grid distance between two points."""
@@ -17,6 +18,8 @@ def main():
     
     # Initialize and Load the RL Agent
     rl_agent = RLAgent()
+    # Initialize and Load the A* Agent
+    astar_agent = AgentAStar()
     tracker = PerformanceTracker()
     tracker.measure_memory("rl", rl_agent.q_table) # Measure Q-Table RAM instantly
     try:
@@ -70,6 +73,7 @@ def main():
 
                         # Record the perfect distance to the very first apple
                         tracker.add_optimal_distance("rl", get_manhattan_distance(env.snake.body[0], env.food))
+                        tracker.add_optimal_distance("astar", get_manhattan_distance(env.snake.body[0], env.food))
                         
                     # Clicked Compare Button (Only works if both are tested)
                     elif ui.btn_compare.collidepoint(mouse_pos) and astar_tested and rl_tested:
@@ -105,6 +109,26 @@ def main():
                 if done:
                     sim_active = False 
                     tracker.set_score("rl", env.score) # Save final score
+
+            elif state == "SIM_ASTAR":
+                # --- START STOPWATCH ---
+                tracker.start_timer()
+                action = astar_agent.obtenir_action(env)
+                tracker.stop_timer("astar")
+                
+                # Record how many nodes A* explored
+                tracker.set_nodes("astar", astar_agent.nodes_explored)
+                
+                _, reward, done = env.step(action)
+                tracker.record_step("astar")
+                
+                # If we ate an apple, record the perfect distance to the NEXT apple
+                if reward > 0:
+                    tracker.add_optimal_distance("astar", get_manhattan_distance(env.snake.body[0], env.food))
+                    
+                if done:
+                    sim_active = False
+                    tracker.set_score("astar", env.score)
 
         # ==========================================
         # DRAWING THE SCREEN
