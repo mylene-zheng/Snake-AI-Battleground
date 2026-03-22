@@ -10,7 +10,7 @@ def get_manhattan_distance(pos1, pos2):
     return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
 
 def run_automated_benchmark(num_games=100):
-    print(f"🚀 Démarrage du benchmark automatisé ({num_games} parties)...")
+    print(f"🚀 Starting automated benchmark ({num_games} games)...")
     
     env = GameEnvironment(grid_size=10)
     tracker = PerformanceTracker()
@@ -21,7 +21,7 @@ def run_automated_benchmark(num_games=100):
         rl_agent.charger_modele("models/qtable_v1.pkl")
         rl_agent.epsilon = 0.0 # Exploit only!
     except FileNotFoundError:
-        print("⚠️ Attention: Modèle RL introuvable.")
+        print("⚠️ Warning: RL Model not found.")
 
     astar_agent = AgentAStar()
 
@@ -33,9 +33,9 @@ def run_automated_benchmark(num_games=100):
     seeds = [42 + i for i in range(num_games)]
 
     # ==========================================
-    # TEST 1 : ALGORITHME A*
+    # TEST 1 : A* ALGORITHM
     # ==========================================
-    print("⏳ Évaluation de l'Algorithme A* en cours...")
+    print("⏳ Evaluating A* Algorithm...")
     for seed in seeds:
         random.seed(seed)
         env.reset()
@@ -57,9 +57,9 @@ def run_automated_benchmark(num_games=100):
                 tracker.add_optimal_distance("astar", get_manhattan_distance(env.snake.body[0], env.food))
 
     # ==========================================
-    # TEST 2 : APPRENTISSAGE PAR RENFORCEMENT
+    # TEST 2 : REINFORCEMENT LEARNING
     # ==========================================
-    print("⏳ Évaluation de l'Apprentissage RL en cours...")
+    print("⏳ Evaluating RL Agent...")
     for seed in seeds:
         random.seed(seed)
         env.reset()
@@ -80,9 +80,9 @@ def run_automated_benchmark(num_games=100):
                 tracker.add_optimal_distance("rl", get_manhattan_distance(env.snake.body[0], env.food))
 
     # ==========================================
-    # CALCUL DES MOYENNES ET AFFICHAGE
+    # CALCULATE AVERAGES AND DISPLAY
     # ==========================================
-    print("✅ Simulations terminées ! Calcul des statistiques...")
+    print("✅ Simulations complete! Calculating statistics...")
     d_astar = tracker.data["astar"]
     d_rl = tracker.data["rl"]
 
@@ -97,11 +97,11 @@ def run_automated_benchmark(num_games=100):
     astar_mem = d_astar["memory_kb"]
     rl_mem = d_rl["memory_kb"]
 
-    print("\n📊 RÉSULTATS FINAUX :")
-    print(f"A* -> Temps: {astar_time:.3f} ms | Nœuds moyens: {astar_nodes_avg:.0f} | Mémoire: {astar_mem:.2f} KB")
-    print(f"RL -> Temps: {rl_time:.3f} ms | Nœuds moyens: 0 | Mémoire: {rl_mem:.2f} KB")
+    print("\n📊 FINAL RESULTS:")
+    print(f"A* -> Time: {astar_time:.3f} ms | Avg Nodes: {astar_nodes_avg:.0f} | Memory: {astar_mem:.2f} KB")
+    print(f"RL -> Time: {rl_time:.3f} ms | Avg Nodes: 0 | Memory: {rl_mem:.2f} KB")
 
-    print("\n🎨 Génération des graphiques...")
+    print("\n🎨 Generating charts...")
     plot_algorithm_comparison(astar_time, rl_time, astar_mem, rl_mem, astar_nodes_avg)
 
 if __name__ == "__main__":

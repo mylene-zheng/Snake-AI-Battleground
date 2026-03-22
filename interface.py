@@ -32,7 +32,7 @@ class GameInterface:
         # Fonts
         self.title_font = pygame.font.SysFont("Arial", 40, bold=True)
         self.button_font = pygame.font.SysFont("Arial", 20, bold=True)
-        self.text_font = pygame.font.SysFont("Arial", 18)  # <--- ADD THIS LINE
+        self.text_font = pygame.font.SysFont("Arial", 18)  
 
         # 2. DYNAMIC CENTERING: Calculate button positions based on window size
         btn_w, btn_h = 450, 50
@@ -56,15 +56,15 @@ class GameInterface:
         
         # Buttons
         pygame.draw.rect(self.screen, NIGHT_BLUE, self.btn_astar, border_radius=5)
-        self._draw_centered_text("Algorithme A*", self.btn_astar, WHITE)
+        self._draw_centered_text("A* Algorithm", self.btn_astar, WHITE)
 
         pygame.draw.rect(self.screen, NIGHT_BLUE, self.btn_rl, border_radius=5)
-        self._draw_centered_text("Apprentissage par Renforcement", self.btn_rl, WHITE)
+        self._draw_centered_text("Reinforcement Learning", self.btn_rl, WHITE)
 
         # Comparison Button Logic (Locked vs Unlocked)
         compare_color = NIGHT_BLUE if (astar_tested and rl_tested) else DISABLED_GREY
         pygame.draw.rect(self.screen, compare_color, self.btn_compare, border_radius=5)
-        self._draw_centered_text("Comparer Les Deux Approches", self.btn_compare, WHITE)
+        self._draw_centered_text("Comparing the Two Approaches", self.btn_compare, WHITE)
 
     # ==========================================
     # VIEW 2: SIMULATION (Header + Grid)
@@ -75,8 +75,10 @@ class GameInterface:
         pygame.draw.rect(self.screen, WHITE, header_rect)
         
         # Draw Back Button (<-)
-        pygame.draw.circle(self.screen, NIGHT_BLUE, self.btn_back.center, 15, width=2)
-        pygame.draw.line(self.screen, NIGHT_BLUE, (15, 25), (25, 25), 2)
+        pygame.draw.circle(self.screen, NIGHT_BLUE, self.btn_back.center, 15, width=3)
+        pygame.draw.line(self.screen, NIGHT_BLUE, (15, 25), (32, 25), 2)
+        pygame.draw.line(self.screen, NIGHT_BLUE, (15, 25), (20, 20), 2)  # Top arrow
+        pygame.draw.line(self.screen, NIGHT_BLUE, (15, 25), (20, 30), 2)  # Bottom arrow
         
         # Header Text
         mode_surf = self.button_font.render(mode_name, True, NIGHT_BLUE)
@@ -84,7 +86,7 @@ class GameInterface:
         self.screen.blit(mode_surf, (self.window_width//2 - mode_surf.get_width()//2, 15))
         self.screen.blit(score_surf, (self.window_width - 120, 15))
 
-        # 2. Draw Game Area (Now centered dynamically!)
+        # 2. Draw Game Area 
         self.screen.fill(NIGHT_BLUE, (0, self.header_height, self.window_width, self.window_height))
         
         # Draw Grid Lines
@@ -115,10 +117,12 @@ class GameInterface:
         
         # Draw Back Button (<-)
         pygame.draw.circle(self.screen, NIGHT_BLUE, self.btn_back.center, 15, width=2)
-        pygame.draw.line(self.screen, NIGHT_BLUE, (15, 25), (25, 25), 2)
+        pygame.draw.line(self.screen, NIGHT_BLUE, (15, 25), (32, 25), 2)
+        pygame.draw.line(self.screen, NIGHT_BLUE, (15, 25), (20, 20), 2)  # Top arrow
+        pygame.draw.line(self.screen, NIGHT_BLUE, (15, 25), (20, 30), 2)  # Bottom arrow
         
         # Header Title
-        title_surf = self.title_font.render("Comparaison", True, NIGHT_BLUE)
+        title_surf = self.title_font.render("Comparison", True, NIGHT_BLUE)
         self.screen.blit(title_surf, (self.window_width//2 - title_surf.get_width()//2, 5))
 
         # 2. Draw Background (Dark Blue + Faint Grid)
@@ -141,13 +145,13 @@ class GameInterface:
         
         # Headers
         col_width = table_width // 3
-        headers = ["", "Algorithme A*", "Apprentissage RL"]
+        headers = ["", "A* Algorithm", "Reinforcement Learning"]
         for i, text in enumerate(headers):
             surf = self.button_font.render(text, True, NIGHT_BLUE)
             self.screen.blit(surf, (table_x + (i * col_width) + 10, table_y + 10))
 
         # Draw Rows for M-01 to M-05
-        row_labels = ["M01: Optimalité", "M02: Temps (ms)", "M03: Nœuds", "M04: Mémoire (KB)", "M05: Réussite (%)"]
+        row_labels = ["M01: Optimality", "M02: Time (ms)", "M03: Nodes", "M04: Memory (KB)", "M05: Success"]
         row_height = (table_height - 40) // 5
         
         for i, label in enumerate(row_labels):

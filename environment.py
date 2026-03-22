@@ -86,7 +86,7 @@ class GameEnvironment:
 
         # 1. Check for failure (Collision)
         if self._check_collision(new_head):
-            return self.get_rl_state(), -100.0, True # CHANGED to -100.0
+            return self.get_rl_state(), -100.0, True 
 
         # 2. Check for success (Eating food)
         if new_head == self.food:
@@ -94,12 +94,11 @@ class GameEnvironment:
             self.score += 1
             self.steps_without_food = 0
             self._place_food()
-            return self.get_rl_state(), 50.0, False  # CHANGED to +50.0
+            return self.get_rl_state(), 50.0, False  
 
         # 3. Normal step
         self.snake.move(new_head)
-        # Give a tiny survival bonus so it prefers empty space over walls
-        return self.get_rl_state(), 0.0, False       # CHANGED to +0.1
+        return self.get_rl_state(), 0.0, False       
 
     # ==========================================
     # VISION FOR A* (Lina's API)

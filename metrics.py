@@ -44,24 +44,24 @@ class PerformanceTracker:
         """Translates the raw data into the exact format your UI table expects."""
         d = self.data[algo]
         
-        # M01: Optimalité (Ratio of Actual Steps to Perfect Steps)
+        # M01: Optimality (Ratio of Actual Steps to Perfect Steps)
         # 1.0 is perfect. Higher than 1.0 means it took a longer, safer route.
         if d["optimal_dist"] > 0:
             m01 = f"{d['steps'] / d['optimal_dist']:.2f}x"
         else:
             m01 = "N/A"
             
-        # M02: Temps de Calcul (Average time per move)
+        # M02: Calculation Time (Average time per move)
         avg_time = d["time_ms"] / d["steps"] if d["steps"] > 0 else 0
         m02 = f"{avg_time:.2f} ms"
         
-        # M03: Coût d'Exploration (Nodes)
+        # M03: Exploration Cost (Nodes)
         m03 = str(d["nodes"]) if d["nodes"] > 0 else "N/A"
         
-        # M04: Consommation Mémoire
+        # M04: Power Consumption Memory
         m04 = f"{d['memory_kb']:.1f} KB"
         
-        # M05: Taux de Réussite (We will use the Score for the visual demo)
+        # M05: Success rate (We will use the Score for the visual demo)
         m05 = f"Score: {d['score']}"
         
         return {

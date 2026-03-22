@@ -64,4 +64,4 @@ def train_agent(num_episodes=1000):
 if __name__ == "__main__":
     # 1000 is a good starting point for a 10x10 grid. 
     # You will likely need 5000+ for a 20x20 grid later.
-    train_agent(num_episodes=10000)
+    train_agent(num_episodes=100000)

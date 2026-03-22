@@ -19,7 +19,7 @@ class Node:
 
 class AgentAStar:
     def __init__(self):
-        self.nodes_explored = 0 # To track M03 for the comparison table!
+        self.nodes_explored = 0 # To track M03 for the comparison table
 
     def obtenir_action(self, env) -> tuple:
         """
@@ -50,7 +50,7 @@ class AgentAStar:
             current_node = heapq.heappop(open_list)
             closed_set.add(current_node.position)
             
-            # If we found the apple, trace the path back to the start!
+            # If we found the apple, trace the path back to the start
             if current_node.position == target:
                 curr = current_node
                 while curr.parent is not None:
@@ -93,12 +93,12 @@ class AgentAStar:
         # DECISION TIME
         # ==========================================
         if path:
-            # Normal Mode: We found a path! Take the first step.
+            # Normal Mode: We found a path -> Take the first step.
             next_cell = path[0]
             action = (next_cell[0] - start[0], next_cell[1] - start[1])
             return action
         else:
-            # SURVIVAL MODE: The apple is blocked off by our own body!
+            # SURVIVAL MODE: The apple is blocked off by our own body
             # Pick ANY free adjacent cell just to survive one more turn.
             for dx, dy in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
                 nx, ny = start[0] + dx, start[1] + dy

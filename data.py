@@ -26,29 +26,29 @@ def plot_training_metrics(csv_path="data/training_logs.csv", window=50):
     # 3. Set up the visual dashboard (Dark background to match your UI!)
     plt.style.use('dark_background')
     fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 12))
-    fig.suptitle('Analyse de l\'Apprentissage par Renforcement (Q-Learning)', fontsize=16, fontweight='bold', color='cyan')
+    fig.suptitle('Reinforcement Learning Analysis (Q-Learning)', fontsize=16, fontweight='bold', color='cyan')
 
     # --- Plot 1: Score over Time ---
-    ax1.plot(df['Episode_ID'], df['Score'], alpha=0.3, color='cyan', label='Score Brut')
-    ax1.plot(df['Episode_ID'], df['Score_MA'], color='white', linewidth=2, label=f'Moyenne ({window} eps)')
-    ax1.set_ylabel('Pommes Mangées')
-    ax1.set_title('Évolution du Score')
+    ax1.plot(df['Episode_ID'], df['Score'], alpha=0.3, color='cyan', label='Raw Score')
+    ax1.plot(df['Episode_ID'], df['Score_MA'], color='white', linewidth=2, label=f'Average ({window} eps)')
+    ax1.set_ylabel('Apples Eaten')
+    ax1.set_title('Score Evolution')
     ax1.legend()
     ax1.grid(True, alpha=0.2)
 
     # --- Plot 2: Survival (Steps) over Time ---
-    ax2.plot(df['Episode_ID'], df['Steps'], alpha=0.3, color='lime', label='Étapes Brutes')
-    ax2.plot(df['Episode_ID'], df['Steps_MA'], color='white', linewidth=2, label=f'Moyenne ({window} eps)')
-    ax2.set_ylabel('Étapes Survéçues')
-    ax2.set_title('Durée de Survie par Épisode')
+    ax2.plot(df['Episode_ID'], df['Steps'], alpha=0.3, color='lime', label='Raw Steps')
+    ax2.plot(df['Episode_ID'], df['Steps_MA'], color='white', linewidth=2, label=f'Average ({window} eps)')
+    ax2.set_ylabel('Steps Survived')
+    ax2.set_title('Survival Duration per Episode')
     ax2.legend()
     ax2.grid(True, alpha=0.2)
 
     # --- Plot 3: Epsilon Decay (Exploration vs Exploitation) ---
     ax3.plot(df['Episode_ID'], df['Epsilon'], color='magenta', linewidth=2)
-    ax3.set_xlabel('Numéro d\'Épisode')
-    ax3.set_ylabel('Taux d\'Exploration (ε)')
-    ax3.set_title('Décroissance de l\'Epsilon')
+    ax3.set_xlabel('Episode Number')
+    ax3.set_ylabel('Exploration Rate (ε)')
+    ax3.set_title('Epsilon Decay')
     ax3.grid(True, alpha=0.2)
 
     # Adjust layout and show the plot
@@ -65,26 +65,26 @@ def plot_algorithm_comparison(astar_time, rl_time, astar_mem, rl_mem, astar_node
     """
     plt.style.use('dark_background')
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
-    fig.suptitle('Comparaison des Performances : Algorithme A* vs RL', fontsize=16, fontweight='bold', color='white')
+    fig.suptitle('Performance Comparison: A* Algorithm vs RL', fontsize=16, fontweight='bold', color='white')
     
     labels = ['A*', 'RL']
     colors = ['#4B8BBE', '#FFE873'] # Python Blue and Yellow
 
     # Chart 1: Temps de Calcul (M02)
     ax1.bar(labels, [astar_time, rl_time], color=colors)
-    ax1.set_title('Temps de Calcul Moyen (ms)')
-    ax1.set_ylabel('Millisecondes (Moins c\'est mieux)')
+    ax1.set_title('Average Computation Time (ms)')
+    ax1.set_ylabel('Milliseconds (Lower is better)')
 
     # Chart 2: Consommation Mémoire (M04)
     ax2.bar(labels, [astar_mem, rl_mem], color=colors)
-    ax2.set_title('Empreinte Mémoire (KB)')
-    ax2.set_ylabel('Kilooctets (Moins c\'est mieux)')
+    ax2.set_title('Memory Footprint (KB)')
+    ax2.set_ylabel('Kilobytes (Lower is better)')
 
     # Chart 3: Noeuds Explorés (M03)
     # RL is 0 because it doesn't search!
     ax3.bar(labels, [astar_nodes, 0], color=colors)
-    ax3.set_title('Coût d\'Exploration (Nœuds)')
-    ax3.set_ylabel('Nœuds (Moins c\'est mieux)')
+    ax3.set_title('Exploration Cost (Nodes)')
+    ax3.set_ylabel('Nodes (Lower is better)')
 
     plt.tight_layout()
     plt.show()
@@ -92,4 +92,4 @@ def plot_algorithm_comparison(astar_time, rl_time, astar_mem, rl_mem, astar_node
 if __name__ == "__main__":
     # A window of 50 is perfect for smoothing out a 1000-episode training run.
     # If you train for 10,000 episodes later, you might want to increase this to 100 or 200.
-    plot_training_metrics(window=50)
+    plot_training_metrics(window=200)

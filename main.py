@@ -140,7 +140,7 @@ def main():
             ui.draw_simulation("Algorithme A*", env.score, list(env.snake.body), env.food)
             
         elif state == "SIM_RL":
-            ui.draw_simulation("Renforcement", env.score, list(env.snake.body), env.food)
+            ui.draw_simulation("Reinforcement Learning", env.score, list(env.snake.body), env.food)
             
         elif state == "COMPARISON":
             # PULL THE REAL CALCULATED DATA!
