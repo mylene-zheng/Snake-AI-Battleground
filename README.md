@@ -37,8 +37,8 @@ The application tracks 5 core metrics to compare the two approaches:
 ## 📸 Showcase
 
 ### AI Agents in Action
-![Gameplay A* GIF](assets/astar_video.gif)
-![Gameplay RL GIF](assets/RL_video.gif)
+![Gameplay A* GIF](assets/astar_carton_speed.gif)
+![Gameplay RL GIF](assets/RL_carton_speed.gif)
 
 ### Analytics Dashboard
 ![A* VS RL Comparison](assets/comparison.png)

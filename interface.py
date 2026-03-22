@@ -4,10 +4,13 @@ from typing import List, Tuple, Dict
 # === Color Palette ===
 NIGHT_BLUE = (26, 26, 46)      # #1A1A2E
 CYAN = (0, 255, 255)
-RED = (255, 0, 0)
+RED = (220, 20, 60)
 WHITE = (255, 255, 255)
 GRID_LINE_COLOR = (40, 40, 60) # Slightly lighter than background for grid
 DISABLED_GREY = (150, 150, 150) # For the locked comparison button
+BLACK = (0, 0, 0)              # For the pupils
+GREEN = (50, 200, 50)          # For the apple leaf
+BROWN = (139, 69, 19)          # For the apple stem
 
 class GameInterface:
     def __init__(self, grid_size: int, cell_size: int = 25):
@@ -98,13 +101,77 @@ class GameInterface:
             pygame.draw.line(self.screen, GRID_LINE_COLOR, (self.board_offset_x, line_y), (self.board_offset_x + self.board_width, line_y))
 
         # Draw Food & Snake (Offset by the centering math)
+        # ==========================================
+        # DRAW CARTOON APPLE
+        # ==========================================
         if food:
-            food_rect = (self.board_offset_x + food[0]*self.cell_size, self.header_height + food[1]*self.cell_size, self.cell_size, self.cell_size)
-            pygame.draw.rect(self.screen, RED, food_rect)
+            # Find the absolute center of the grid cell
+            fx = self.board_offset_x + food[0] * self.cell_size
+            fy = self.header_height + food[1] * self.cell_size
+            cx, cy = fx + self.cell_size // 2, fy + self.cell_size // 2
+            radius = self.cell_size // 2 - 2
+
+            # 1. Main Apple Body
+            pygame.draw.circle(self.screen, RED, (cx, cy), radius)
+            # 2. Shiny Highlight (Makes it look 3D)
+            pygame.draw.circle(self.screen, (255, 100, 100), (cx - radius//3, cy - radius//3), radius//3)
+            # 3. Stem
+            pygame.draw.line(self.screen, BROWN, (cx, cy - radius + 2), (cx + 4, cy - radius - 5), 3)
+            # 4. Little Leaf
+            pygame.draw.ellipse(self.screen, GREEN, (cx + 2, cy - radius - 8, 10, 6))
+
+        # ==========================================
+        # DRAW CARTOON SNAKE
+        # ==========================================
+        # Calculate direction from the first two segments so we know where the eyes go!
+        dx, dy = 1, 0  # Default facing right
+        if len(snake_body) > 1:
+            dx = snake_body[0][0] - snake_body[1][0]
+            dy = snake_body[0][1] - snake_body[1][1]
+
+        for i, segment in enumerate(snake_body):
+            sx = self.board_offset_x + segment[0] * self.cell_size
+            sy = self.header_height + segment[1] * self.cell_size
             
-        for segment in snake_body:
-            seg_rect = (self.board_offset_x + segment[0]*self.cell_size, self.header_height + segment[1]*self.cell_size, self.cell_size, self.cell_size)
-            pygame.draw.rect(self.screen, CYAN, seg_rect)
+            if i == 0:
+                # --- DRAW HEAD ---
+                # Rounded rectangle for a smooth head
+                pygame.draw.rect(self.screen, CYAN, (sx, sy, self.cell_size, self.cell_size), border_radius=12)
+
+                # Eye and Tongue Math
+                cx, cy = sx + self.cell_size // 2, sy + self.cell_size // 2
+                tx, ty = cx + dx * (self.cell_size // 2), cy + dy * (self.cell_size // 2) # Tongue base
+                
+                if dx == 1:   # Right
+                    e1, e2 = (cx + 4, cy - 6), (cx + 4, cy + 6)
+                    tf = (tx + 8, ty - 4, tx + 8, ty + 4) # Tongue fork
+                elif dx == -1: # Left
+                    e1, e2 = (cx - 4, cy - 6), (cx - 4, cy + 6)
+                    tf = (tx - 8, ty - 4, tx - 8, ty + 4)
+                elif dy == -1: # Up
+                    e1, e2 = (cx - 6, cy - 4), (cx + 6, cy - 4)
+                    tf = (tx - 4, ty - 8, tx + 4, ty - 8)
+                else:          # Down
+                    e1, e2 = (cx - 6, cy + 4), (cx + 6, cy + 4)
+                    tf = (tx - 4, ty + 8, tx + 4, ty + 8)
+
+                # Draw Eyes (White balls, Black pupils looking forward)
+                pygame.draw.circle(self.screen, WHITE, e1, 5)
+                pygame.draw.circle(self.screen, WHITE, e2, 5)
+                pygame.draw.circle(self.screen, BLACK, (e1[0] + dx*2, e1[1] + dy*2), 2)
+                pygame.draw.circle(self.screen, BLACK, (e2[0] + dx*2, e2[1] + dy*2), 2)
+
+                # Draw Tongue (Red line with a little fork at the end)
+                pygame.draw.line(self.screen, RED, (tx, ty), (tx + dx*6, ty + dy*6), 2)
+                pygame.draw.line(self.screen, RED, (tx + dx*6, ty + dy*6), (tf[0], tf[1]), 2)
+                pygame.draw.line(self.screen, RED, (tx + dx*6, ty + dy*6), (tf[2], tf[3]), 2)
+
+            else:
+                # --- DRAW BODY SEGMENTS ---
+                # Draw slightly smaller, rounded rectangles to make it look like a segmented caterpillar
+                pad = 3
+                body_rect = (sx + pad, sy + pad, self.cell_size - (pad*2), self.cell_size - (pad*2))
+                pygame.draw.rect(self.screen, CYAN, body_rect, border_radius=8)
 
     # ==========================================
     # VIEW 3: COMPARISON TABLE
