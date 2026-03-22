@@ -55,13 +55,15 @@ The application tracks 5 core metrics to compare the two approaches:
    ```bash
    pip install pygame pandas matplotlib numpy 
    ```
-3. **Run the simulation:**
-   ```bash
-   python main.py
-   ```
-4. **Train a new RL Agent from scratch:**
+
+3. **Train a new RL Agent from scratch:**
    ```bash
    python train.py
+   ```
+
+4. **Run the simulation:**
+   ```bash
+   python main.py
    ```
 5. **View Training Analytics Dashboard:**
    ```bash
@@ -76,7 +78,7 @@ The application tracks 5 core metrics to compare the two approaches:
 
 | Parameter                | Value      | Justification                                                       |
 | :----------------------- | :--------- | :------------------------------------------------------------------ |
-| **Training Episodes**    | 10,000     | Required to fully map the 11-sensor state space variations.         |
+| **Training Episodes**    | 100,000    | Required to fully map the 11-sensor state space variations.         |
 | **Learning Rate (α)**    | 0.1        | Ensures stable learning by avoiding drastic Q-Table oscillations.   |
 | **Discount Factor (γ)**  | 0.99       | Gives high importance to achieving long-term goals (eating apples). |
 | **Exploration Rate (ε)** | 1.0 → 0.01 | Encourages random exploration initially, shifting to exploitation.  |
