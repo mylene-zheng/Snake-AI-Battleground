@@ -1,6 +1,7 @@
 import random
 from collections import deque
 from typing import Tuple, List, Dict
+from utils.state_encoder import StateEncoder
 
 # Define absolute directions (x, y)
 UP = (0, -1)
@@ -110,63 +111,12 @@ class GameEnvironment:
     # ==========================================
     # VISION FOR RL (Ruowen API)
     # ==========================================
-    def get_rl_state(self) -> List[int]:
+    def get_rl_state(self) -> list:
         """
-        Calculates the local vector state for the RL agent.
-        Returns: [danger_straight, danger_right, danger_left, 
-                  food_up, food_down, food_left, food_right]
+        Delegates the state calculation to the dedicated StateEncoder.
         """
-        head = self.snake.get_head()
-        
-        # Define the points immediately adjacent to the head
-        point_l = (head[0] - 1, head[1])
-        point_r = (head[0] + 1, head[1])
-        point_u = (head[0], head[1] - 1)
-        point_d = (head[0], head[1] + 1)
-        
-        # Identify current direction
-        dir_l = self.snake.direction == LEFT
-        dir_r = self.snake.direction == RIGHT
-        dir_u = self.snake.direction == UP
-        dir_d = self.snake.direction == DOWN
-
-        # Calculate Danger based on relative direction
-        # Danger Straight
-        danger_straight = (dir_r and self._check_collision(point_r)) or \
-                          (dir_l and self._check_collision(point_l)) or \
-                          (dir_u and self._check_collision(point_u)) or \
-                          (dir_d and self._check_collision(point_d))
-                          
-        # Danger Right (Relative to the snake's current facing)
-        danger_right = (dir_u and self._check_collision(point_r)) or \
-                       (dir_d and self._check_collision(point_l)) or \
-                       (dir_l and self._check_collision(point_u)) or \
-                       (dir_r and self._check_collision(point_d))
-
-        # Danger Left (Relative to the snake's current facing)
-        danger_left = (dir_d and self._check_collision(point_r)) or \
-                      (dir_u and self._check_collision(point_l)) or \
-                      (dir_r and self._check_collision(point_u)) or \
-                      (dir_l and self._check_collision(point_d))
-
-        # Food Location
-        food_up = self.food[1] < head[1]
-        food_down = self.food[1] > head[1]
-        food_left = self.food[0] < head[0]
-        food_right = self.food[0] > head[0]
-
-        # Construct the final state vector
-        state = [
-            int(danger_straight),
-            int(danger_right),
-            int(danger_left),
-            int(food_up),
-            int(food_down),
-            int(food_left),
-            int(food_right)
-        ]
-
-        return state
+        # Pass 'self' (the whole environment) to the encoder
+        return StateEncoder.get_rl_state(self)
     
 
 if __name__ == "__main__":
